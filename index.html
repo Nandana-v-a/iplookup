@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IP Address Lookup</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f0f0f0;
+            padding: 20px;
+        }
+        .container {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            display: inline-block;
+        }
+        h1 {
+            color: #333333;
+        }
+        p {
+            font-size: 1.2em;
+            margin: 10px 0;
+        }
+        #ip {
+            font-weight: bold;
+            color: #0056b3;
+        }
+        .copy-icon {
+            cursor: pointer;
+            margin-left: 10px;
+            color: #0056b3;
+            font-size: 1.2em;
+        }
+        .copied {
+            color: #28a745;
+            font-weight: bold;
+        }
+    </style>
+    <script>
+        async function getClientIP() {
+            try {
+                const response = await fetch('https://api64.ipify.org?format=json');
+                const data = await response.json();
+                document.getElementById('ip').textContent = data.ip;
+            } catch (error) {
+                document.getElementById('ip').textContent = 'Unable to fetch IP address';
+                console.error('Error fetching IP address:', error);
+            }
+        }
+
+        function copyToClipboard() {
+            const ipText = document.getElementById('ip').textContent;
+            navigator.clipboard.writeText(ipText).then(() => {
+                const copyIcon = document.querySelector('.copy-icon');
+                copyIcon.textContent = '✓';
+                copyIcon.classList.add('copied');
+                setTimeout(() => {
+                    copyIcon.textContent = '📋';
+                    copyIcon.classList.remove('copied');
+                }, 2000);
+            }).catch(err => {
+                console.error('Error copying to clipboard:', err);
+            });
+        }
+
+        window.onload = getClientIP;
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Your IP Address</h1>
+        <p>Your IP address is: <span id="ip">Fetching...</span>
+            <span class="copy-icon" onclick="copyToClipboard()">📋</span>
+        </p>
+    </div>
+</body>
+</html>
